@@ -4,7 +4,7 @@
 
 Built for the [Flip the Switch Hackathon](https://www.wemakedevs.org/hackathons/switch) (Track 02: Best Personal or Creative Workflow).
 
-🎥 **Demo video:** _link here_
+🎥 **Demo video:** https://youtu.be/BqRDBYAjJD8
 🌐 **Sites the crew planned, built, tested and shipped:**
 - Portfolio (planner → builder → tester): https://daniel123451234512345.github.io/portfolio/ ([repo](https://github.com/Daniel123451234512345/portfolio))
 - Todo app with dark mode (builder → tester): https://daniel123451234512345.github.io/pocket-crew-demo/ ([repo](https://github.com/Daniel123451234512345/pocket-crew-demo))
