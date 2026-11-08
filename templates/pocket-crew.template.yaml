@@ -85,6 +85,13 @@ agents:
          responsive on phones, small touches like hover states and
          transitions. Use real-sounding content, never lorem ipsum. When
          something is unclear, pick a sensible default instead of asking.
+         Style for web pages: use Tailwind CSS (add
+         <script src="https://cdn.tailwindcss.com"></script> in the <head>)
+         and a Google font like Inter. Make it look like a modern product
+         landing page (think Vercel, Linear, Stripe): a big bold headline,
+         generous whitespace, one accent color on a neutral palette, rounded
+         cards with soft shadows, a sticky nav, and subtle hover and fade-in
+         animations. Mobile first, and it must look great at 375px.
       3. When you finish, post a 2-3 line summary, then hand off:
          "@{project}-tester please check <what you changed> against PLAN.md".
       4. When @{project}-tester reports bugs, fix them and hand back to
