@@ -1,6 +1,6 @@
 # Pocket Crew
 
-**A mixed AI crew in my group chat. Claude builds, a different AI checks it, and my friends and I are the bosses. No terminals.**
+**A mixed AI crew in my group chat. One AI plans, one builds, a different AI checks it, and my friends and I are the bosses. No terminals.**
 
 Built for the [Flip the Switch Hackathon](https://www.wemakedevs.org/hackathons/switch) (Track 02: Best Personal or Creative Workflow).
 
@@ -13,38 +13,41 @@ Built for the [Flip the Switch Hackathon](https://www.wemakedevs.org/hackathons/
 
 I'm a first-year student with too many side projects and not enough time at my laptop. AI coding agents are great, but they live in a terminal on my MacBook. When I'm on the bus and think "my site needs dark mode," I can't do anything about it.
 
-Also, a single agent checking its own work isn't real review. It shares its own blind spots.
+Also, a single agent checking its own work isn't real review. It shares its own blind spots. And a one-line message from my phone ("make my portfolio look legit") gets a bare-minimum result, because nobody turns it into a real plan.
 
 ## What Pocket Crew does
 
-Every side project gets its own chat room. In each room there's a two-agent crew:
+Every side project gets its own chat room. In each room there's a three-agent crew:
 
 | Agent | Runs on | Job |
 |---|---|---|
-| **builder** | Claude Code | Writes and fixes code. Ships when a human approves. |
-| **tester** | OpenCode | Reads and runs what builder made, reports bugs. **Never edits code.** |
+| **planner** | Claude Code | Turns a short, vague request into `PLAN.md`: what to build, how it should look, and a "done when" checklist. Never asks questions first; it lists its assumptions instead. |
+| **builder** | Claude Code | Builds `PLAN.md` to a show-off standard, fixes bugs, ships when a human approves. |
+| **tester** | OpenCode | Checks the work against `PLAN.md`, runs it, and does a design check at phone and desktop width. Reports bugs. **Never edits code.** |
 
 And there are humans: me, plus anyone I invite. We're the bosses.
 
 ```
- me (phone):  "@builder add a dark mode toggle"
-     builder:  builds it → "@tester please check the dark mode toggle"
-      tester:  "@builder 1. toggle doesn't remember the choice on reload ..."
+ me (phone):  "@planner make my portfolio look legit"
+     planner:  writes PLAN.md (sections, style, done-when, assumptions)
+               → "@builder please build PLAN.md"
+     builder:  builds it → "@tester please check it against PLAN.md"
+      tester:  "@builder 1. projects grid scrolls sideways at 375px ..."
      builder:  fixes it → "@tester re-check please"
       tester:  "@builder passes ✅"
-     builder:  "Ready to ship: dark mode toggle. Approve?"
- me (phone):  "ship it"
+     builder:  "Ready to ship: portfolio refresh. Approve?"
+ me (phone):  "@builder ship it"
      builder:  git commit + push → "Shipped 🚀 https://…github.io/…"
 ```
 
-Nothing goes live until a human says **ship it**.
+Nothing goes live until a human says **ship it**. For small tweaks ("make the button blue") I skip the planner and message the builder directly.
 
 ## How Switch is used (and why this doesn't work without it)
 
 [Switch](https://docs.switchagents.ai) connects AI agents and people in the chat apps they already use. In Pocket Crew it's the central piece:
 
-1. **Switch runs both agents as members of a chat room.** builder (Claude Code) and tester (OpenCode) are started and managed by the Switch Console on my Mac and show up as bot users in Mattermost. I don't open a terminal.
-2. **Switch is the only link between the two agents.** Claude Code and OpenCode are separate tools from different companies with no way to talk to each other. The `@tester` / `@builder` handoffs travel through the Switch room.
+1. **Switch runs all three agents as members of a chat room.** planner and builder (Claude Code) and tester (OpenCode) are started and managed by the Switch Console on my Mac and show up as bot users in Mattermost. I don't open a terminal.
+2. **Switch is the only link between the agents.** Each agent is its own separate session, and Claude Code and OpenCode are separate tools from different companies with no way to talk to each other. Every handoff (planner → builder → tester → builder) is an @mention that travels through the Switch room.
 3. **Switch gives each room its own agent session.** The same builder in `#portfolio` and `#stats-project` keeps separate context, so each project has its own memory.
 4. **Switch puts people in the loop.** Anyone in the room can give orders or approve. The approval gate ("ship it") is a chat message from a person.
 
@@ -63,16 +66,16 @@ Fair question. Claude Code can build *and* test with its own subagents. What it 
 ```
   ┌──────────── Mattermost (chat app) ────────────┐
   │  #project-demo     #portfolio     #…          │
-  │   me, friend, @builder, @tester               │
+  │   me, friend, @planner, @builder, @tester     │
   └──────────────────────┬────────────────────────┘
                          │  Switch collaboration bridge
                ┌─────────┴─────────┐
                │   Switch server   │  rooms, sessions per room, routing @mentions
                └─────────┬─────────┘
                          │  Switch agent controller (my Mac)
-           ┌─────────────┴─────────────┐
-     builder (Claude Code)      tester (OpenCode)
-           └──── same project folder (a git repo) ────┘
+        ┌────────────────┼────────────────┐
+  planner (Claude)  builder (Claude)  tester (OpenCode)
+        └──── same project folder (git repo + PLAN.md) ────┘
                          │ "ship it" → git push
                     GitHub Pages (live site)
 ```
@@ -90,12 +93,12 @@ Fair question. Claude Code can build *and* test with its own subagents. What it 
    gh repo create my-site --public --source=. --push
    gh api -X POST repos/<you>/my-site/pages -f "source[branch]=main" -f "source[path]=/"
    ```
-4. **Create the crew from the template:** in Switch Console → Templates, import [`templates/pocket-crew.template.yaml`](templates/pocket-crew.template.yaml), set `project` (e.g. `my-site`) and `directory` (your folder from step 3), and deploy. This creates `my-site-builder`, `my-site-tester` and the `#my-site` room.
-   - *Manual alternative:* create two agents in Switch Console (`builder` on Claude Code, `tester` on OpenCode, both with "This computer" and your folder as the working directory), paste [`agents/builder.md`](agents/builder.md) and [`agents/tester.md`](agents/tester.md) as their instructions, then create a room with both.
+4. **Create the crew from the template:** in Switch Console → Templates, import [`templates/pocket-crew.template.yaml`](templates/pocket-crew.template.yaml), set `project` (e.g. `my-site`) and `directory` (your folder from step 3), and deploy. This creates `my-site-planner`, `my-site-builder`, `my-site-tester` and the `#my-site` room.
+   - *Manual alternative:* create three agents in Switch Console (`planner` and `builder` on Claude Code, `tester` on OpenCode, all with "This computer" and your folder as the working directory), paste [`agents/planner.md`](agents/planner.md), [`agents/builder.md`](agents/builder.md) and [`agents/tester.md`](agents/tester.md) as their instructions, then create a room with all three. Their names just need to end in `planner`, `builder` and `tester`.
 5. **Allow Switch Console access to your folder:** on macOS, grant it access under System Settings → Privacy & Security if the agents can't read or write files.
 6. In the room, try:
    ```
-   @my-site-builder add a dark mode toggle. Hand off to tester when done.
+   @my-site-planner turn this into a portfolio site for a college student who loves data science
    ```
    Wait for "Approve?", reply **@my-site-builder ship it**, and open your GitHub Pages link.
 
@@ -107,16 +110,17 @@ Fair question. Claude Code can build *and* test with its own subagents. What it 
 - **Don't quit Switch Console while agents are working.** Quitting stops every agent mid-task. Closing the window is fine.
 - **Agents working in the wrong folder?** Set the working directory in the agent's settings, restart the agent, and start a fresh chat.
 - **Always @mention the agent you're talking to.** Switch only delivers a message to an agent that's addressed, so approve with `@builder ship it`; a bare "ship it" never reaches builder.
-- **Don't @mention the tester in your request**, or it wakes up before there's anything to test. Builder hands off by itself.
+- **Only @mention the agent you want to start.** If your request also mentions the tester, it wakes up before there's anything to test. The agents hand off to each other by themselves.
 - **OpenCode with no login** uses a free built-in model. It works but is slow (2–4 min per check). `opencode auth login` with your own key speeds it up.
 
 ## Repo contents
 
 ```
 README.md                            this file
+agents/planner.md                    planner's instructions
 agents/builder.md                    builder's instructions
 agents/tester.md                     tester's instructions
-templates/pocket-crew.template.yaml  one-click Switch template: 2 agents + room
+templates/pocket-crew.template.yaml  one-click Switch template: 3 agents + room
 ```
 
 ## Built with
