@@ -97,7 +97,7 @@ Fair question. Claude Code can build *and* test with its own subagents. What it 
    ```
    @my-site-builder add a dark mode toggle. Hand off to tester when done.
    ```
-   Wait for "Approve?", reply **ship it**, and open your GitHub Pages link.
+   Wait for "Approve?", reply **@my-site-builder ship it**, and open your GitHub Pages link.
 
 **Another project?** Deploy the template again with a new `project` name. You get a new room with its own separate memory.
 
@@ -106,6 +106,7 @@ Fair question. Claude Code can build *and* test with its own subagents. What it 
 - **Open Docker before Switch Console.** If the bridge crashed, quit the Console, stop the leftover server (`pkill -f switch_core.main`), then open the Console once and let it start everything.
 - **Don't quit Switch Console while agents are working.** Quitting stops every agent mid-task. Closing the window is fine.
 - **Agents working in the wrong folder?** Set the working directory in the agent's settings, restart the agent, and start a fresh chat.
+- **Always @mention the agent you're talking to.** Switch only delivers a message to an agent that's addressed, so approve with `@builder ship it`; a bare "ship it" never reaches builder.
 - **Don't @mention the tester in your request**, or it wakes up before there's anything to test. Builder hands off by itself.
 - **OpenCode with no login** uses a free built-in model. It works but is slow (2–4 min per check). `opencode auth login` with your own key speeds it up.
 
