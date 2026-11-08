@@ -5,15 +5,17 @@
 Built for the [Flip the Switch Hackathon](https://www.wemakedevs.org/hackathons/switch) (Track 02: Best Personal or Creative Workflow).
 
 🎥 **Demo video:** _link here_
-🌐 **Live site the crew built and shipped:** https://daniel123451234512345.github.io/pocket-crew-demo/ ([repo](https://github.com/Daniel123451234512345/pocket-crew-demo))
+🌐 **Sites the crew planned, built, tested and shipped:**
+- Portfolio (planner → builder → tester): https://daniel123451234512345.github.io/portfolio/ ([repo](https://github.com/Daniel123451234512345/portfolio))
+- Todo app with dark mode (builder → tester): https://daniel123451234512345.github.io/pocket-crew-demo/ ([repo](https://github.com/Daniel123451234512345/pocket-crew-demo))
 
 ---
 
 ## The problem
 
-I'm a first-year student with too many side projects and not enough time at my laptop. AI coding agents are great, but they live in a terminal on my MacBook. When I'm on the bus and think "my site needs dark mode," I can't do anything about it.
+I'm a first-year student with too many side projects. AI coding agents are great, but each one lives in its own terminal window on my MacBook: one tool, one person, one session. They can't hand work to each other, and nobody else can join in.
 
-Also, a single agent checking its own work isn't real review. It shares its own blind spots. And a one-line message from my phone ("make my portfolio look legit") gets a bare-minimum result, because nobody turns it into a real plan.
+Also, a single agent checking its own work isn't real review. It shares its own blind spots. And a one-line request ("make my portfolio look legit") gets a bare-minimum result, because nobody turns it into a real plan.
 
 ## What Pocket Crew does
 
@@ -28,7 +30,7 @@ Every side project gets its own chat room. In each room there's a three-agent cr
 And there are humans: me, plus anyone I invite. We're the bosses.
 
 ```
- me (phone):  "@planner make my portfolio look legit"
+ me:          "@planner make my portfolio look legit"
      planner:  writes PLAN.md (sections, style, done-when, assumptions)
                → "@builder please build PLAN.md"
      builder:  builds it → "@tester please check it against PLAN.md"
@@ -36,7 +38,7 @@ And there are humans: me, plus anyone I invite. We're the bosses.
      builder:  fixes it → "@tester re-check please"
       tester:  "@builder passes ✅"
      builder:  "Ready to ship: portfolio refresh. Approve?"
- me (phone):  "@builder ship it"
+ me:          "@builder ship it"
      builder:  git commit + push → "Shipped 🚀 https://…github.io/…"
 ```
 
@@ -60,6 +62,12 @@ Fair question. Claude Code can build *and* test with its own subagents. What it 
 - **Live where I already am.** The crew runs in a chat app (Mattermost here, and the same rooms can be bridged to Discord or Slack), with a room per project, instead of a terminal window per project.
 
 **Delete Switch and Pocket Crew stops existing:** the agents go back to separate terminals, can't hand work to each other, and nobody can reach them from chat.
+
+## What's demoed vs. what's next
+
+**Demoed (working end to end):** the three-agent crew in local Mattermost rooms, handoffs through Switch, separate rooms per project, the approval gate, and real deploys to GitHub Pages.
+
+**Next:** Switch can bridge the same rooms to Discord and Slack ([messaging apps guide](https://docs.switchagents.ai/flintai/switch/deploy/messaging-apps)). That's the step that puts the crew in the chat app on my phone. I demoed on the local Mattermost that ships with Switch Console. I also want the planner and builder to agree on the tech stack (the planner currently plans plain CSS while the builder uses Tailwind).
 
 ## Architecture
 
